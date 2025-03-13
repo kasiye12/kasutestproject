@@ -1,29 +1,27 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.response import Response
+from .models import News, Like
+from .serializers import NewsSerializer, LikeSerializer
 from rest_framework.decorators import action
-from .models import News
-from .serializers import NewsSerializer
 
 class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
 
-    def get_queryset(self):
-        queryset = News.objects.all().order_by('-created_at')
-        page_size = 3
-        page = self.request.query_params.get('page', 1)
-        return queryset[(int(page)-1)*page_size:int(page)*page_size]
-
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
-        news = self.get_object()
-        news.likes += 1
-        news.save()
-        return Response({'likes': news.likes})
+        news_item = self.get_object()
+        user = request.data.get('user')
+        Like.objects.create(news=news_item, user=user)
+        return Response({'likes_count': news_item.likes.count()})
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['delete'])
     def dislike(self, request, pk=None):
-        news = self.get_object()
-        news.dislikes += 1
-        news.save()
-        return Response({'dislikes': news.dislikes})
+        news_item = self.get_object()
+        user = request.data.get('user')
+        Like.objects.filter(news=news_item, user=user).delete()
+        return Response({'likes_count': news_item.likes.count()})
+
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer

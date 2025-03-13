@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t74@6d540ftu2tr)tm%tphjx1e#dk%h25hpcfq9gw()1k66r_q'
+SECRET_KEY = 'django-insecure-y@9yt@p589n(yhhcm9zkzii@0gcb*!tur^1bht+keav64=2(tl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,19 +29,21 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.admin',  # Ensure this is listed only once
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third-party apps
     'rest_framework',
     'corsheaders',
-    'news',
-]
 
+    # Your custom apps
+    'news',  # Ensure this is your actual app name
+]
 
 
 MIDDLEWARE = [
@@ -127,4 +129,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ALLOW_ALL_ORIGINS = True
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
